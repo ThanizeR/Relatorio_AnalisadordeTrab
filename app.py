@@ -20,6 +20,26 @@ import plotly.io as pio
 from reportlab.lib.colors import black
 import textwrap
 
+st.set_page_config("📊Analisador de Trabalho", page_icon="", layout="wide")
+
+# Função para carregar o arquivo por tipo de máquina
+@st.cache_data
+def load_data(file, file_type, encoding='utf-8'):
+    try:
+        if file_type == "CSV":
+            df = pd.read_excel(file, engine='openpyxl')
+        return df
+    except UnicodeDecodeError:
+        st.error(f"Erro: Não foi possível decodificar o arquivo usando o encoding '{encoding}'. "
+                 "Verifique o formato do arquivo ou tente novamente com um encoding diferente.")
+        
+# Lógica para página de Tratores
+#st.sidebar.title('Selecione a página:')
+#pagina_selecionada = st.sidebar.radio("Selecione a página:", ("Tratores", "Pulverizadores", "Colheitadeira"))
+
+# Função para quebrar linhas dos nomes das máquinas
+def wrap_labels(labels, width):
+    return ['\n'.join(textwrap.wrap(label, width)) for label in labels]
 # Menu dropdown na barra superior
 selected = option_menu(
     menu_title=None,  # Título do menu, None para esconder
