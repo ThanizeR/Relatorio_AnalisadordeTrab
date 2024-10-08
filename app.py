@@ -190,9 +190,9 @@ if selected == "Aplicação":
                                 va='center', ha='left', fontsize=10, fontweight='bold')
 
             # Configurar os eixos e título
-            ax_haaplicada.set_xlabel('Área Aplicada (ha)')
+            ax_haaplicada.set_xlabel('')
             ax_haaplicada.set_ylabel('')
-            ax_haaplicada.set_title('Área Aplicada por Máquina')
+            ax_haaplicada.set_title('')
             ax_haaplicada.set_yticklabels(wrapped_labels)
 
             # Centralizar a barra única
