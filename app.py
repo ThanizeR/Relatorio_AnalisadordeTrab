@@ -32,10 +32,6 @@ def load_data(file, file_type, encoding='utf-8'):
     except UnicodeDecodeError:
         st.error(f"Erro: Não foi possível decodificar o arquivo usando o encoding '{encoding}'. "
                  "Verifique o formato do arquivo ou tente novamente com um encoding diferente.")
-        
-# Lógica para página de Tratores
-#st.sidebar.title('Selecione a página:')
-#pagina_selecionada = st.sidebar.radio("Selecione a página:", ("Tratores", "Pulverizadores", "Colheitadeira"))
 
 # Função para quebrar linhas dos nomes das máquinas
 def wrap_labels(labels, width):
@@ -51,8 +47,8 @@ def generate_pdf_aplicacao(df_aplicacao, figures, background_image_first_page=No
     header_space_other_pages = 70  # Espaço para o cabeçalho
 
     # Tamanho do gráfico
-    graph_width = page_width - 2 * x_margin  # Largura do gráfico
-    graph_height = page_height - header_space_other_pages - 2 * y_margin  # Altura do gráfico
+    graph_width = (page_width - 2 * x_margin) / 2  # Largura de cada gráfico (2 por linha)
+    graph_height = (page_height - header_space_other_pages - 2 * y_margin) / 2  # Altura de cada gráfico (2 por coluna)
 
     def set_background(page_num):
         if page_num == 0 and background_image_first_page:
@@ -73,34 +69,62 @@ def generate_pdf_aplicacao(df_aplicacao, figures, background_image_first_page=No
     # Adicionando informações relevantes na segunda página
     if 'Clientes' in df_aplicacao.columns:
         cliente = df_aplicacao['Clientes'].iloc[0]
-
-        # Texto à esquerda com espaçamento como dois Tabs
         c.setFont("Helvetica", 10)
         c.drawString(x_margin - 20, page_height - 40, f"Cliente: {cliente}")
+
+    try:
+        # Certifique-se de que as datas estão no formato datetime
+        if 'Primeiro Aplicado' in df_aplicacao.columns:
+            df_aplicacao['Primeiro Aplicado'] = pd.to_datetime(df_aplicacao['Primeiro Aplicado'], errors='coerce')
+            primeiro_aplicado = df_aplicacao['Primeiro Aplicado'].min()
+            primeiro_aplicado_str = primeiro_aplicado.strftime('%d/%m/%Y') if pd.notnull(primeiro_aplicado) else "Data inválida"
+
+        if 'Última Aplicação' in df_aplicacao.columns:
+            df_aplicacao['Última Aplicação'] = pd.to_datetime(df_aplicacao['Última Aplicação'], errors='coerce')
+            ultima_aplicacao = df_aplicacao['Última Aplicação'].max()
+            ultima_aplicacao_str = ultima_aplicacao.strftime('%d/%m/%Y') if pd.notnull(ultima_aplicacao) else "Data inválida"
+
+        # Adicionar as datas ao PDF
+        c.drawString(x_margin - 20, page_height - 60, f"Primeira Aplicação: {primeiro_aplicado_str}")
+        c.drawString(x_margin - 20, page_height - 80, f"Última Aplicação: {ultima_aplicacao_str}")
+
+    except Exception as e:
+        print(f"Erro ao processar datas: {e}")
 
     page_num = 1
     graph_index = 0
 
     while graph_index < len(figures):
-        fig = figures[graph_index]
+        for row in range(2):  # Duas linhas
+            for col in range(2):  # Duas colunas
+                if graph_index >= len(figures):
+                    break  # Não há mais gráficos para adicionar
 
-        if not isinstance(fig, plt.Figure):
-            print(f"Skipping non-Matplotlib figure: {type(fig)}")
-            continue
+                fig = figures[graph_index]
 
-        # Salvar gráfico como imagem
-        img_data = BytesIO()
-        fig.savefig(img_data, format='png', bbox_inches='tight')
-        img_data.seek(0)
+                if not isinstance(fig, plt.Figure):
+                    print(f"Skipping non-Matplotlib figure: {type(fig)}")
+                    graph_index += 1
+                    continue
 
-        # Centralizar o gráfico e movê-lo um pouco mais para cima
-        c.drawImage(ImageReader(img_data), x_margin, y_margin + 20, width=graph_width, height=graph_height)  # Aumentar para subir
-        graph_index += 1
+                # Salvar gráfico como imagem
+                img_data = BytesIO()
+                fig.savefig(img_data, format='png', bbox_inches='tight')
+                img_data.seek(0)
 
-        if graph_index < len(figures):
-            c.showPage()
-            page_num += 1
-            set_background(page_num)
+                # Calcular a posição do gráfico
+                x_position = x_margin + col * graph_width
+                y_position = y_margin + row * graph_height + header_space_other_pages
+
+                # Centralizar o gráfico e movê-lo um pouco mais para cima
+                c.drawImage(ImageReader(img_data), x_position, y_position, width=graph_width, height=graph_height)
+                graph_index += 1
+
+            if graph_index >= len(figures):
+                break  # Não há mais gráficos para adicionar
+        c.showPage()
+        page_num += 1
+        set_background(page_num)
 
     c.showPage()
     c.save()
