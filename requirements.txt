@@ -6,4 +6,3 @@ plotly
 streamlit-option-menu
 reportlab
 pillow
-locale
