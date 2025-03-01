@@ -524,7 +524,7 @@ def generate_pdf_preparo(df_preparo, figures, background_image_first_page_aplica
 
         if 'Última Preparo do Solo' in df_preparo.columns:
             df_preparo['Última Preparo do Solo'] = pd.to_datetime(df_preparo['Última Preparo do Solo'], errors='coerce')
-            ultima_aplicacao = df_preparo['Última Aplicação'].max()
+            ultima_aplicacao = df_preparo['Último Preparo do Solo'].max()
             ultima_aplicacao_str = ultima_aplicacao.strftime('%d/%m/%Y') if pd.notnull(ultima_aplicacao) else "Data inválida"
         c.setFillColorRGB(1, 1, 1)  # Cor branca (RGB: 1, 1, 1)
         # Adicionar informações ao PDF na primeira página
