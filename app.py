@@ -19,7 +19,6 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import plotly.io as pio
 from reportlab.lib.colors import black
 import textwrap
-import locale
 
 st.set_page_config("📊Analisador de Trabalho", page_icon="", layout="wide")
 
@@ -34,8 +33,6 @@ def load_data(file, file_type, encoding='utf-8'):
         st.error(f"Erro: Não foi possível decodificar o arquivo usando o encoding '{encoding}'. "
                  "Verifique o formato do arquivo ou tente novamente com um encoding diferente.")
         
-# Configura a localidade para o Brasil
-locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 def generate_pdf_aplicacao(df_aplicacao, figures, background_image_first_page_aplicacao=None, background_image_other_pages=None):
     pdf_buffer = BytesIO()
@@ -119,15 +116,16 @@ def generate_pdf_aplicacao(df_aplicacao, figures, background_image_first_page_ap
         combustivel_total = df_aplicacao['Combustível Total'].sum()
         total_equipamentos = df_aplicacao['Nome da Máquina'].nunique()
 
-        # Formatar os números com a localidade brasileira
-        area_total_aplicada_formatada = locale.format_string("%.2f", area_total_aplicada, grouping=True)
-        combustivel_total_formatado = locale.format_string("%.2f", combustivel_total, grouping=True)
+        # Formatar os números manualmente no formato brasileiro (com separador de milhar e vírgula para decimal)
+        area_total_aplicada_formatada = f"{area_total_aplicada:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        combustivel_total_formatado = f"{combustivel_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
         # Adicionar informações na segunda página
         c.setFont("Helvetica", 8)
         c.drawString(x_margin, page_height - 40, f"Área Total Aplicada: {area_total_aplicada_formatada} ha")
         c.drawString(x_margin, page_height - 60, f"Combustível Total: {combustivel_total_formatado} L")
         c.drawString(x_margin, page_height - 80, f"Total de Equipamentos: {total_equipamentos}")
+
 
     except Exception as e:
         print(f"Erro ao calcular ou formatar os dados: {e}")
@@ -266,10 +264,8 @@ def generate_pdf_colheita(df_colheita, figures, background_image_first_page_colh
         total_equipamentos = df_colheita['Nome da Máquina'].nunique()
 
         # Formatar os números com a localidade brasileira
-        area_total_aplicada_formatada = locale.format_string("%.2f", area_total_aplicada, grouping=True)
-        combustivel_total_formatado = locale.format_string("%.2f", combustivel_total, grouping=True)
-
-        # Adicionar informações na segunda página
+        area_total_aplicada_formatada = f"{area_total_aplicada:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        combustivel_total_formatado = f"{combustivel_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         c.setFont("Helvetica", 8)
         c.drawString(x_margin, page_height - 40, f"Área Total Colhida: {area_total_aplicada_formatada} ha")
         c.drawString(x_margin, page_height - 60, f"Combustível Total: {combustivel_total_formatado} L")
@@ -410,8 +406,8 @@ def generate_pdf_semeadura(df_semeadura, figures, background_image_first_page_se
         total_equipamentos = df_semeadura['Nome da Máquina'].nunique()
 
         # Formatar os números com a localidade brasileira
-        area_total_aplicada_formatada = locale.format_string("%.2f", area_total_aplicada, grouping=True)
-        combustivel_total_formatado = locale.format_string("%.2f", combustivel_total, grouping=True)
+        area_total_aplicada_formatada = f"{area_total_aplicada:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        combustivel_total_formatado = f"{combustivel_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
         # Adicionar informações na segunda página
         c.setFont("Helvetica", 8)
@@ -553,8 +549,8 @@ def generate_pdf_preparo(df_preparo, figures, background_image_first_page_aplica
         total_equipamentos = df_preparo['Nome da Máquina'].nunique()
 
         # Formatar os números com a localidade brasileira
-        area_total_aplicada_formatada = locale.format_string("%.2f", area_total_aplicada, grouping=True)
-        combustivel_total_formatado = locale.format_string("%.2f", combustivel_total, grouping=True)
+        area_total_aplicada_formatada = f"{area_total_aplicada:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        combustivel_total_formatado = f"{combustivel_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
         # Adicionar informações na segunda página
         c.setFont("Helvetica", 8)
