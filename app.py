@@ -731,7 +731,8 @@ if selected == "Aplicação":
             # Converter as colunas para numéricas, tratando erros
             df_selected_taxas["Taxa Aplicada"] = pd.to_numeric(df_selected_taxas["Taxa Aplicada"], errors='coerce').fillna(0)
             df_selected_taxas["Taxa Alvo"] = pd.to_numeric(df_selected_taxas["Taxa Alvo"], errors='coerce').fillna(0)
-
+            # Ordenar o DataFrame com base na soma da área aplicada
+            
             # Calcular as médias da Taxa Aplicada e Taxa Alvo por Máquina
             df_medias_taxas = df_selected_taxas.groupby("Nome da Máquina")[["Taxa Aplicada", "Taxa Alvo"]].mean().reset_index()
 
@@ -784,7 +785,7 @@ if selected == "Aplicação":
 
             # Calcular as médias da Velocidade por Máquina
             df_medias_Velocidade = df_selected_Velocidade.groupby("Nome da Máquina")["Velocidade"].mean().reset_index()
-
+            df_medias_Velocidade = df_medias_Velocidade.sort_values(by="Velocidade", ascending=False)
             # Configurar o gráfico
             fig_mediaVelocidade_aplicacao, ax_Velocidade = plt.subplots(figsize=(12, 8))
 
@@ -829,6 +830,7 @@ if selected == "Aplicação":
 
             # Calcular as médias da Eficiência Operacional por Máquina
             df_medias_eficiencia = df_selected_eficiencia.groupby("Nome da Máquina")["Eficiência Operacional"].mean().reset_index()
+            df_medias_eficiencia = df_medias_eficiencia.sort_values(by="Eficiência Operacional", ascending=False)
 
             # Calcular a média geral da Eficiência Operacional
             media_geral = df_medias_eficiencia["Eficiência Operacional"].mean()
@@ -940,7 +942,6 @@ if selected == "Aplicação":
 
             # Agrupar os dados por "Nome da Máquina" e somar "Combustível Total"
             df_soma_haaplicada = df_selected_haaplicada.groupby("Nome da Máquina", as_index=False)["Combustível Total"].sum()
-
             # Verificar se o agrupamento foi bem-sucedido
             #st.write("Dados Agrupados:", df_soma_haaplicada)
 
@@ -1149,7 +1150,7 @@ if selected == "Colheita":
 
                 # Calcular as médias da Velocidade por Máquina
                 df_medias_Velocidade = df_selected_Velocidade.groupby("Nome da Máquina")["Velocidade"].mean().reset_index()
-
+                df_medias_Velocidade = df_medias_Velocidade.sort_values(by="Velocidade", ascending=False)
                 # Configurar o gráfico
                 fig_mediaVelocidade_colheita, ax_Velocidade = plt.subplots(figsize=(12, 8))
 
@@ -1190,7 +1191,7 @@ if selected == "Colheita":
 
                 # Calcular as médias da Eficiência Operacional por Máquina
                 df_medias_eficiencia = df_selected_eficiencia.groupby("Nome da Máquina")["Eficiência Operacional"].mean().reset_index()
-
+                df_medias_eficiencia = df_medias_eficiencia.sort_values(by="Eficiência Operacional", ascending=False)
                 # Calcular a média geral da Eficiência Operacional
                 media_geral = df_medias_eficiencia["Eficiência Operacional"].mean()
 
@@ -1247,7 +1248,6 @@ if selected == "Colheita":
                 df_medias_combustivel = df_selected_combustivel.groupby("Nome da Máquina")["Taxa de Combustível (Área)"].mean().reset_index()
                 df_medias_combustivel = df_medias_combustivel.sort_values(by="Taxa de Combustível (Área)", ascending=False)
 
-
                 # Configurar o gráfico de linhas
                 fig_media_combustivel_colheita, ax_combustivel = plt.subplots(figsize=(12, 8))
                 
@@ -1297,7 +1297,7 @@ if selected == "Colheita":
 
                 # Agrupar os dados por "Nome da Máquina" e somar "Combustível Total"
                 df_soma_hacombustivel = df_selected_hacombustivel.groupby("Nome da Máquina", as_index=False)["Combustível Total"].sum()
-
+                df_soma_hacombustivel = df_soma_hacombustivel.sort_values(by="Combustível Total", ascending=False)
                 # Verificar se o agrupamento foi bem-sucedido
                 #st.write("Dados Agrupados:", df_soma_haaplicada)
 
@@ -1472,7 +1472,7 @@ if selected == "Semeadura":
 
                 # Calcular as médias da Velocidade por Máquina
                 df_medias_Velocidade = df_selected_Velocidade.groupby("Nome da Máquina")["Velocidade"].mean().reset_index()
-
+                df_medias_Velocidade = df_medias_Velocidade.sort_values(by="Velocidade", ascending=False)
                 # Configurar o gráfico
                 fig_mediaVelocidade_semeadura, ax_Velocidade = plt.subplots(figsize=(12, 8))
 
@@ -1512,6 +1512,7 @@ if selected == "Semeadura":
 
                 # Calcular as médias da Eficiência Operacional por Máquina
                 df_medias_eficiencia = df_selected_eficiencia.groupby("Nome da Máquina")["Eficiência Operacional"].mean().reset_index()
+                df_medias_eficiencia = df_medias_eficiencia.sort_values(by="Eficiência Operacional", ascending=False)
 
                 # Calcular a média geral da Eficiência Operacional
                 media_geral = df_medias_eficiencia["Eficiência Operacional"].mean()
@@ -1621,7 +1622,7 @@ if selected == "Semeadura":
 
                 # Agrupar os dados por "Nome da Máquina" e somar "Combustível Total"
                 df_soma_hacombustivel = df_selected_hacombustivel.groupby("Nome da Máquina", as_index=False)["Combustível Total"].sum()
-
+                df_soma_hacombustivel = df_soma_hacombustivel.sort_values(by="Combustível Total", ascending=False)
                 # Verificar se o agrupamento foi bem-sucedido
                 #st.write("Dados Agrupados:", df_soma_haaplicada)
 
@@ -1800,6 +1801,7 @@ if selected == "Preparo de Solo":
 
                 # Calcular as médias da Velocidade por Máquina
                 df_medias_Velocidade = df_selected_Velocidade.groupby("Nome da Máquina")["Velocidade"].mean().reset_index()
+                df_medias_Velocidade = df_medias_Velocidade.sort_values(by="Velocidade", ascending=False)
 
                 # Configurar o gráfico
                 fig_mediaVelocidade_cultivada, ax_Velocidade = plt.subplots(figsize=(12, 8))
@@ -1840,7 +1842,7 @@ if selected == "Preparo de Solo":
 
                 # Calcular as médias da Eficiência Operacional por Máquina
                 df_medias_eficiencia = df_selected_eficiencia.groupby("Nome da Máquina")["Eficiência Operacional"].mean().reset_index()
-
+                df_medias_eficiencia = df_medias_eficiencia.sort_values(by="Eficiência Operacional", ascending=False)
                 # Calcular a média geral da Eficiência Operacional
                 media_geral = df_medias_eficiencia["Eficiência Operacional"].mean()
 
@@ -1949,7 +1951,7 @@ if selected == "Preparo de Solo":
 
                 # Agrupar os dados por "Nome da Máquina" e somar "Combustível Total"
                 df_soma_hacombustivel = df_selected_hacombustivel.groupby("Nome da Máquina", as_index=False)["Combustível Total"].sum()
-
+                df_soma_hacombustivel = df_soma_hacombustivel.sort_values(by="Combustível Total", ascending=False)
                 # Verificar se o agrupamento foi bem-sucedido
                 #st.write("Dados Agrupados:", df_soma_haaplicada)
 
