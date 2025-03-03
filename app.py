@@ -1113,8 +1113,8 @@ if selected == "Colheita":
                 posicoes = range(len(df_medias_taxas))
 
                 # Plotar as barras verticais
-                bars1 = ax_taxas.bar(posicoes, df_medias_taxas["Rendimento líquido"], width=bar_width, color='midnightblue', label='Taxa Aplicada')
-                bars2 = ax_taxas.bar([p + bar_width for p in posicoes], df_medias_taxas["Rendimento Bruto"], width=bar_width, color='dodgerblue', label='Taxa Alvo')
+                bars1 = ax_taxas.bar(posicoes, df_medias_taxas["Rendimento líquido"], width=bar_width, color='midnightblue', label='Rendimento líquido')
+                bars2 = ax_taxas.bar([p + bar_width for p in posicoes], df_medias_taxas["Rendimento Bruto"], width=bar_width, color='dodgerblue', label='Rendimento Bruto')
 
                 # Adicionar rótulos nas barras
                 for bar in bars1:
