@@ -635,7 +635,7 @@ if selected == "Aplicação":
     col1,col2,col3=st.columns(3)
     # Seleção do tipo de arquivo e upload
     file_type_aplicacao = st.radio("Selecione o tipo de arquivo:", ("CSV",))
-    uploaded_file_aplicacao = st.file_uploader(f"Escolha um arquivo {file_type_aplicacao} para Tratores", type=["xlsx"])
+    uploaded_file_aplicacao = st.file_uploader(f"Escolha um arquivo {file_type_aplicacao} para Aplicações", type=["xlsx"])
 
     if uploaded_file_aplicacao is not None:
         df_aplicacao = load_data(uploaded_file_aplicacao, file_type_aplicacao)
@@ -1084,57 +1084,70 @@ if selected == "Colheita":
                 col5.pyplot(fig_hacolhida)
 
                 #########################MÉDIA TAXA ALVO E TAXA APLICADA###################################
-                # Definir os dados
-                selected_columns_taxas = ["Nome da Máquina", "Rendimento líquido", "Rendimento Bruto"]
+
+                # Copiar DataFrame original
                 df_selected_taxas = df_colheita.copy()
 
-                # Verificar se as colunas existem e, se não existirem, adicionar com valores 0
-                if "Rendimento líquido" not in df_selected_taxas.columns:
-                    df_selected_taxas["Rendimento líquido"] = 0  
+                # Garantir que as colunas existem e converter para numéricas
+                colunas_numericas = ["Rendimento Líquido", "Rendimento Bruto"]
 
-                if "Rendimento Bruto" not in df_selected_taxas.columns:
-                    df_selected_taxas["Rendimento Bruto"] = 0  
+                # Converter as colunas desejadas para numéricas
+                for coluna in colunas_numericas:
+                    if coluna in df_selected_taxas.columns:
+                        df_selected_taxas[coluna] = pd.to_numeric(df_selected_taxas[coluna], errors='coerce')
 
-                # Converter as colunas para numéricas, tratando erros
-                df_selected_taxas["Rendimento líquido"] = pd.to_numeric(df_selected_taxas["Rendimento líquido"], errors='coerce').fillna(0)
-                df_selected_taxas["Rendimento Bruto"] = pd.to_numeric(df_selected_taxas["Rendimento Bruto"], errors='coerce').fillna(0)
+                # Exibir os valores antes de calcular a média (DEBUG)
+                #st.write("### 🔍 Dados antes da média:")
+                #st.dataframe(df_selected_taxas[["Nome da Máquina", "Rendimento Líquido", "Rendimento Bruto"]])
 
-                df_medias_taxas = df_selected_taxas.groupby("Nome da Máquina")[["Rendimento líquido", "Rendimento Bruto"]].mean().reset_index()
+                # Verificar se há valores NaN nas colunas numéricas
+                #st.write("### 🔍 Verificando valores ausentes (NaN) nas colunas numéricas:")
+                #st.write(df_selected_taxas[colunas_numericas].isnull().sum())  # Conta os valores NaN por coluna
 
-                # Calcular as médias gerais
-                media_taxa_aplicada = df_medias_taxas["Rendimento líquido"].mean()
-                media_taxa_alvo = df_medias_taxas["Rendimento Bruto"].mean()
+                # Tratar valores ausentes (NaN) - você pode escolher entre remover ou preencher
+                # Exemplo: Preencher NaN com 0
+                df_selected_taxas[colunas_numericas] = df_selected_taxas[colunas_numericas].fillna(0)
 
-                # Configurar o gráfico
+                # Exibir os valores após o preenchimento (DEBUG)
+                #st.write("### 🔍 Dados após o preenchimento de valores ausentes (NaN):")
+                #st.dataframe(df_selected_taxas[["Nome da Máquina", "Rendimento Líquido", "Rendimento Bruto"]])
+
+                # Realizar o groupby e calcular a média das colunas numéricas
+                df_medias_taxas = df_selected_taxas.groupby("Nome da Máquina", as_index=False)[colunas_numericas].mean()
+
+                # Verificar se as médias estão corretas
+                #st.write("### 📊 Médias calculadas:")
+                #st.dataframe(df_medias_taxas)
+
+                # Criar gráfico horizontal
                 fig_taxa_colheita, ax_taxas = plt.subplots(figsize=(12, 8))
 
-                # Definir a largura das barras
-                bar_width = 0.35  
+                bar_height = 0.35  
                 posicoes = range(len(df_medias_taxas))
 
-                # Plotar as barras verticais
-                bars1 = ax_taxas.bar(posicoes, df_medias_taxas["Rendimento líquido"], width=bar_width, color='midnightblue', label='Rendimento líquido')
-                bars2 = ax_taxas.bar([p + bar_width for p in posicoes], df_medias_taxas["Rendimento Bruto"], width=bar_width, color='dodgerblue', label='Rendimento Bruto')
+                bars1 = ax_taxas.barh(posicoes, df_medias_taxas["Rendimento Líquido"], height=bar_height, color='midnightblue', label='Rendimento Líquido')
+                bars2 = ax_taxas.barh([p + bar_height for p in posicoes], df_medias_taxas["Rendimento Bruto"], height=bar_height, color='dodgerblue', label='Rendimento Bruto')
 
                 # Adicionar rótulos nas barras
                 for bar in bars1:
-                    height = bar.get_height()
-                    ax_taxas.text(bar.get_x() + bar.get_width() / 2, height, f'{height:.1f}', ha='center', va='bottom', fontsize=10, fontweight='bold', color='black')
+                    width = bar.get_width()
+                    ax_taxas.text(width, bar.get_y() + bar.get_height() / 2, f'{width:.3f}', va='center', fontsize=10, fontweight='bold', color='black')
 
                 for bar in bars2:
-                    height = bar.get_height()
-                    ax_taxas.text(bar.get_x() + bar.get_width() / 2, height, f'{height:.1f}', ha='center', va='bottom', fontsize=10, fontweight='bold', color='black')
+                    width = bar.get_width()
+                    ax_taxas.text(width, bar.get_y() + bar.get_height() / 2, f'{width:.3f}', va='center', fontsize=10, fontweight='bold', color='black')
 
-                # Configurar os eixos e rótulos
-                ax_taxas.set_xticks([p + bar_width / 2 for p in posicoes])  
-                ax_taxas.set_xticklabels(df_medias_taxas["Nome da Máquina"], rotation=45, ha='right')
+                # Configurar rótulos e título
+                ax_taxas.set_yticks([p + bar_height / 2 for p in posicoes])  
+                ax_taxas.set_yticklabels(df_medias_taxas["Nome da Máquina"], rotation=0, ha='right')
 
                 ax_taxas.set_xlabel('')
                 ax_taxas.set_ylabel('')
-                ax_taxas.set_title('Rendimento líquido vs Rendimento Bruto')
+                ax_taxas.set_title('Rendimento Líquido vs Rendimento Bruto')
 
-                # Adicionar legenda
-                ax_taxas.legend(loc='upper right')
+                ax_taxas.legend(loc='lower right')
+
+
                 col6.pyplot(fig_taxa_colheita)
                 #############################MÉDIA VELOCIDADE##########################################
                 # Definir os dados
@@ -1318,7 +1331,7 @@ if selected == "Colheita":
 
                 # Definir a largura das barras
                 #num_maquinas = len(maquinas_haaplicada)
-            # bar_width = 0.2 if num_maquinas >= 3 else 0.4  
+                bar_width = 0.2 if num_maquinas >= 3 else 0.4  
 
                 # Criar gráfico de barras
                 bars = ax_hacombustivel.bar(maquinas_hacombustivel, hacombustivel, color='dodgerblue', width=bar_width)
