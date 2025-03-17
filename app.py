@@ -911,7 +911,8 @@ if selected == "Aplicação":
             ax_combustivel.set_title('Média de Combustível por Equipamento (l/ha)')
 
             plt.subplots_adjust(top=0.9)
-
+            # Rotacionar apenas os rótulos do eixo X
+            ax_combustivel.set_xticklabels(df_medias_combustivel["Nome da Máquina"], rotation=45, ha='right')
             # Adicionar grade
             ax_combustivel.grid(True, linestyle='--', alpha=0.7)
 
@@ -1279,7 +1280,8 @@ if selected == "Colheita":
                 ax_combustivel.set_xlabel('')
                 ax_combustivel.set_ylabel('')
                 ax_combustivel.set_title('Média de Combustível por Equipamento (l/ha)')
-
+                # Rotacionar apenas os rótulos do eixo X
+                ax_combustivel.set_xticklabels(df_medias_combustivel["Nome da Máquina"], rotation=45, ha='right')
                 # Adicionar grade
                 ax_combustivel.grid(True, linestyle='--', alpha=0.7)
 
@@ -1606,6 +1608,8 @@ if selected == "Semeadura":
                 ax_combustivel.set_title('Média de Combustível por Equipamento (l/ha)')
                 plt.subplots_adjust(top=0.9)
                 # Adicionar grade
+                # Rotacionar apenas os rótulos do eixo X
+                ax_combustivel.set_xticklabels(df_medias_combustivel["Nome da Máquina"], rotation=45, ha='right')
                 ax_combustivel.grid(True, linestyle='--', alpha=0.7)
 
                 # Adicionar legenda
@@ -1934,7 +1938,9 @@ if selected == "Preparo de Solo":
                 ax_combustivel.set_ylabel('')
                 ax_combustivel.set_title('Média de Combustível por Equipamento (l/ha)')
                 plt.subplots_adjust(top=0.9)
-                # Adicionar grade
+                # Adicionar grad
+                # Rotacionar apenas os rótulos do eixo X
+                ax_combustivel.set_xticklabels(df_medias_combustivel["Nome da Máquina"], rotation=45, ha='right')
                 ax_combustivel.grid(True, linestyle='--', alpha=0.7)
 
                 # Adicionar legenda
