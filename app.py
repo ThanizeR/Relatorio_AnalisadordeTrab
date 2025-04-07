@@ -209,7 +209,7 @@ def generate_pdf_colheita(df_colheita, figures, background_image_first_page_colh
         {'name': 'fig_hacolhida_cultura', 'x': x_margin + 310, 'y': page_height - y_margin - 760, 'width': 200, 'height': 130},  
 
         # Gráfico 6 (comprido no final da página)
-        {'name': 'fig_media_combustivel_colheita','x': x_margin, 'y': page_height - y_margin - 740, 'width': 250, 'height': 200},  # Gráfico 7 (comprido)
+        {'name': 'fig_media_combustivel_colheita','x': x_margin, 'y': page_height - y_margin - 740, 'width': 200, 'height': 200},  # Gráfico 7 (comprido)
     ]
 
 
@@ -258,18 +258,27 @@ def generate_pdf_colheita(df_colheita, figures, background_image_first_page_colh
         # Calcular métricas
         df_colheita['Área Colhida'] = pd.to_numeric(df_colheita['Área Colhida'], errors='coerce')
         df_colheita['Combustível Total'] = pd.to_numeric(df_colheita['Combustível Total'], errors='coerce')
+        df_colheita['Peso líquido'] = pd.to_numeric(df_colheita['Peso líquido'], errors='coerce')
+        df_colheita['Peso Bruto'] = pd.to_numeric(df_colheita['Peso Bruto'], errors='coerce')
 
         area_total_aplicada = df_colheita['Área Colhida'].sum()
         combustivel_total = df_colheita['Combustível Total'].sum()
+        liquido_total = df_colheita['Peso líquido'].sum()
+        bruto_total = df_colheita['Peso Bruto'].sum()
         total_equipamentos = df_colheita['Nome da Máquina'].nunique()
 
         # Formatar os números com a localidade brasileira
         area_total_aplicada_formatada = f"{area_total_aplicada:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         combustivel_total_formatado = f"{combustivel_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        pesoliquido_total_formatado = f"{liquido_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        pesobruto_total_formatado = f"{bruto_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
         c.setFont("Helvetica", 8)
         c.drawString(x_margin, page_height - 40, f"Área Total Colhida: {area_total_aplicada_formatada} ha")
         c.drawString(x_margin, page_height - 60, f"Combustível Total: {combustivel_total_formatado} L")
-        c.drawString(x_margin, page_height - 80, f"Total de Equipamentos: {total_equipamentos}")
+        c.drawString(x_margin, page_height - 80, f"Peso Líquido: {pesoliquido_total_formatado} T")
+        c.drawString(x_margin, page_height - 100, f"Peso Bruto: {pesobruto_total_formatado} T")
+        c.drawString(x_margin, page_height - 120, f"Total de Equipamentos: {total_equipamentos}")
 
     except Exception as e:
         print(f"Erro ao calcular ou formatar os dados: {e}")
@@ -1380,7 +1389,7 @@ if selected == "Colheita":
                     first_organization_name = df_colheita['Clientes'].iloc[0].split()[0]
 
                     # Gerar o PDF
-                    figures = [fig_hacolhida, fig_eficiencia_colheita, fig_media_combustivel_colheita, fig_somacombustivel_colheita, fig_taxa_colheita, fig_hacolhida_cultura, fig_mediaVelocidade_colheita]
+                    figures = [fig_hacolhida,  fig_taxa_colheita, fig_media_combustivel_colheita, fig_somacombustivel_colheita, fig_eficiencia_colheita, fig_hacolhida_cultura, fig_mediaVelocidade_colheita]
                     pdf_buffer = generate_pdf_colheita(df_colheita, figures, background_image_first_page_colheita, background_image_other_pages)
 
                     # Configurar o nome do arquivo dinamicamente
