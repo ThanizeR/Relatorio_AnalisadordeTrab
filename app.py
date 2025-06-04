@@ -37,10 +37,10 @@ def load_data(file, file_type, encoding='utf-8'):
 def generate_pdf_aplicacao(df_aplicacao, figures, background_image_first_page_aplicacao=None, background_image_other_pages=None):
     pdf_buffer = BytesIO()
     
-    # Tamanho A4 em retrato
-    page_width, page_height = A4  # A4 em retrato (595 x 842 pontos)
+    # Tamanho A4 em paisagem
+    page_width, page_height = landscape(A4)  # A4 em paisagem (842 x 595 pontos)
     
-    # Criar o canvas com tamanho A4 em retrato
+    # Criar o canvas com tamanho A4 em paisagem
     c = canvas.Canvas(pdf_buffer, pagesize=(page_width, page_height))
 
     # Margens para o layout
@@ -50,19 +50,15 @@ def generate_pdf_aplicacao(df_aplicacao, figures, background_image_first_page_ap
 
     # Definir as posições e tamanhos dos gráficos conforme sua descrição
     graph_positions_and_sizes = [
-        # Gráfico 1 (canto esquerdo abaixo do título)
-        {'name': 'fig_haaplicada_aplicacao','x': x_margin, 'y': page_height - y_margin - 270, 'width': 270, 'height': 200},  # Gráfico 1
+        # Linha 1 (gráficos 1 a 3)
+        {'name': 'fig_haaplicada_aplicacao',         'x': x_margin,               'y': page_height - y_margin - 260, 'width': 240, 'height': 200},
+        {'name': 'fig_mediaVelocidade_aplicacao',    'x': x_margin + 255,         'y': page_height - y_margin - 260, 'width': 240, 'height': 200},
+        {'name': 'fig_eficiencia_aplicacao',         'x': x_margin + 255 * 2,     'y': page_height - y_margin - 260, 'width': 240, 'height': 200},
 
-        # Gráficos 2, 3, 4 (à direita do gráfico 1)
-        {'name': 'fig_mediaVelocidade_aplicacao','x': x_margin + 270, 'y': page_height - y_margin - 250, 'width': 250, 'height': 200},  # Gráfico 2
-        {'name': 'fig_eficiencia_aplicacao','x': x_margin + 270, 'y': page_height - y_margin - 470, 'width': 250, 'height': 200},  # Gráfico 3
-        {'name': 'fig_media_combustivel_aplicacao','x': x_margin + 290, 'y': page_height - y_margin - 678, 'width': 235, 'height': 200},  # Gráfico 4
-
-        # Gráfico 5 (pequeno abaixo do gráfico 1)
-        {'name': 'fig_taxa_aplicacao','x': x_margin, 'y': page_height - y_margin - 492, 'width': 250, 'height': 200},  # Gráfico 5
-
-        # Gráfico 6 (comprido no final da página)
-        {'name': 'fig_somacombustivel_aplicacao','x': x_margin, 'y': page_height - y_margin - 700, 'width': 250, 'height': 200},  # Gráfico 6 (comprido)
+        # Linha 2 (gráficos 4 a 6)
+        {'name': 'fig_media_combustivel_aplicacao',  'x': x_margin,               'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
+        {'name': 'fig_taxa_aplicacao',               'x': x_margin + 255,         'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
+        {'name': 'fig_somacombustivel_aplicacao',    'x': x_margin + 255 * 2,     'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
     ]
 
 
@@ -181,10 +177,10 @@ background_image_first_page_aplicacao = 'Aplicação.png'
 def generate_pdf_colheita(df_colheita, figures, background_image_first_page_colheita=None, background_image_other_pages=None):
     pdf_buffer = BytesIO()
     
-    # Tamanho A4 em retrato
-    page_width, page_height = A4  # A4 em retrato (595 x 842 pontos)
+    # Tamanho A4 em paisagem
+    page_width, page_height = landscape(A4)  # A4 em paisagem (842 x 595 pontos)
     
-    # Criar o canvas com tamanho A4 em retrato
+    # Criar o canvas com tamanho A4 em paisagem
     c = canvas.Canvas(pdf_buffer, pagesize=(page_width, page_height))
 
     # Margens para o layout
@@ -192,26 +188,21 @@ def generate_pdf_colheita(df_colheita, figures, background_image_first_page_colh
     y_margin = 40  # Margem superior
     header_space_other_pages = 70  # Espaço para o cabeçalho
 
-    # Definir as posições e tamanhos dos gráficos conforme sua descrição
     graph_positions_and_sizes = [
-        # Gráfico 1 (canto esquerdo abaixo do título)
-        {'name': 'fig_hacolhida','x': x_margin, 'y': page_height - y_margin - 270, 'width': 270, 'height': 200},  # Gráfico 1
+    # Linha 1 (gráficos 1 a 3)
+    {'name': 'fig_hacolhida',                 'x': x_margin,               'y': page_height - y_margin - 250, 'width': 240, 'height': 200},
+    {'name': 'fig_taxa_colheita',             'x': x_margin + 255,         'y': page_height - y_margin - 250, 'width': 240, 'height': 200},
+    {'name': 'fig_mediaVelocidade_colheita',  'x': x_margin + 255 * 2,     'y': page_height - y_margin - 170, 'width': 240, 'height': 200},
 
-        # Gráficos 2, 3, 4 (à direita do gráfico 1)
-        {'name': 'fig_taxa_colheita','x': x_margin + 270, 'y': page_height - y_margin - 175, 'width': 250, 'height': 200},  # Gráfico 2
-        {'name': 'fig_mediaVelocidade_colheita','x': x_margin + 270, 'y': page_height - y_margin - 380, 'width': 250, 'height': 200},  # Gráfico 3
-        {'name': 'fig_eficiencia_colheita','x': x_margin + 270, 'y': page_height - y_margin - 600, 'width': 250, 'height': 200},  # Gráfico 4
+    # Linha 2 (gráficos 4 a 6)
+    {'name': 'fig_eficiencia_colheita',       'x': x_margin,               'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
+    {'name': 'fig_somacombustivel_colheita',  'x': x_margin + 255,         'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
+    {'name': 'fig_hacolhida_cultura',         'x': x_margin + 255 * 2,     'y': page_height - y_margin - 380, 'width': 240, 'height': 200},
 
-        # Gráfico 5: Mais comprido e à esquerda
-        {'name': 'fig_somacombustivel_colheita', 'x': x_margin, 'y': page_height - y_margin - 510, 'width': 250, 'height': 200},  
+    # Linha 3 (gráfico extra centralizado abaixo do 6º gráfico, no lado direito)
+    {'name': 'fig_media_combustivel_colheita', 'x': 600, 'y': 60, 'width': 160, 'height': 100},
 
-        # Gráfico 6: Mais para baixo e mais à esquerda (centralizado mais à esquerda)
-        {'name': 'fig_hacolhida_cultura', 'x': x_margin + 310, 'y': page_height - y_margin - 760, 'width': 200, 'height': 130},  
-
-        # Gráfico 6 (comprido no final da página)
-        {'name': 'fig_media_combustivel_colheita','x': x_margin, 'y': page_height - y_margin - 740, 'width': 200, 'height': 200},  # Gráfico 7 (comprido)
     ]
-
 
     def set_background(page_num):
         if page_num == 0 and background_image_first_page_colheita:
@@ -334,10 +325,10 @@ background_image_first_page_colheita = 'Colheita.png'
 def generate_pdf_semeadura(df_semeadura, figures, background_image_first_page_semeadura=None, background_image_other_pages=None):
     pdf_buffer = BytesIO()
     
-    # Tamanho A4 em retrato
-    page_width, page_height = A4  # A4 em retrato (595 x 842 pontos)
+    ## Tamanho A4 em paisagem
+    page_width, page_height = landscape(A4)  # A4 em paisagem (842 x 595 pontos)
     
-    # Criar o canvas com tamanho A4 em retrato
+    # Criar o canvas com tamanho A4 em paisagem
     c = canvas.Canvas(pdf_buffer, pagesize=(page_width, page_height))
 
     # Margens para o layout
@@ -347,19 +338,15 @@ def generate_pdf_semeadura(df_semeadura, figures, background_image_first_page_se
 
     # Definir as posições e tamanhos dos gráficos conforme sua descrição
     graph_positions_and_sizes = [
-        # Gráfico 1 (canto esquerdo abaixo do título)
-        {'name': 'fig_haaplicada_aplicacao','x': x_margin, 'y': page_height - y_margin - 270, 'width': 270, 'height': 200},  # Gráfico 1
+        # Linha 1 (gráficos 1 a 3)
+        {'name': 'fig_haaplicada_aplicacao',         'x': x_margin,               'y': page_height - y_margin - 260, 'width': 240, 'height': 200},
+        {'name': 'fig_mediaVelocidade_aplicacao',    'x': x_margin + 255,         'y': page_height - y_margin - 260, 'width': 240, 'height': 200},
+        {'name': 'fig_eficiencia_aplicacao',         'x': x_margin + 255 * 2,     'y': page_height - y_margin - 240, 'width': 240, 'height': 180},
 
-        # Gráficos 2, 3, 4 (à direita do gráfico 1)
-        {'name': 'fig_mediaVelocidade_aplicacao','x': x_margin + 270, 'y': page_height - y_margin - 290, 'width': 250, 'height': 200},  # Gráfico 2
-        {'name': 'fig_eficiencia_aplicacao','x': x_margin + 310, 'y': page_height - y_margin - 480, 'width': 200, 'height': 140},  # Gráfico 3
-        {'name': 'fig_media_combustivel_aplicacao','x': x_margin + 290, 'y': page_height - y_margin - 700, 'width': 250, 'height': 200},  # Gráfico 4
-
-        # Gráfico 5 (pequeno abaixo do gráfico 1)
-        {'name': 'fig_taxa_aplicacao','x': x_margin, 'y': page_height - y_margin - 492, 'width': 250, 'height': 200},  # Gráfico 5
-
-        # Gráfico 6 (comprido no final da página)
-        {'name': 'fig_somacombustivel_aplicacao','x': x_margin, 'y': page_height - y_margin - 700, 'width': 250, 'height': 200},  # Gráfico 6 (comprido)
+        # Linha 2 (gráficos 4 a 6)
+        {'name': 'fig_media_combustivel_aplicacao',  'x': x_margin,               'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
+        {'name': 'fig_taxa_aplicacao',               'x': x_margin + 255,         'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
+        {'name': 'fig_somacombustivel_aplicacao',    'x': x_margin + 255 * 2,     'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
     ]
 
 
@@ -479,10 +466,10 @@ background_image_first_page_semeadura = 'Semeadura.png'
 def generate_pdf_preparo(df_preparo, figures, background_image_first_page_aplicacao=None, background_image_other_pages=None):
     pdf_buffer = BytesIO()
     
-    # Tamanho A4 em retrato
-    page_width, page_height = A4  # A4 em retrato (595 x 842 pontos)
+    # Tamanho A4 em paisagem
+    page_width, page_height = landscape(A4)  # A4 em paisagem (842 x 595 pontos)
     
-    # Criar o canvas com tamanho A4 em retrato
+    # Criar o canvas com tamanho A4 em paisagem
     c = canvas.Canvas(pdf_buffer, pagesize=(page_width, page_height))
 
     # Margens para o layout
@@ -492,20 +479,15 @@ def generate_pdf_preparo(df_preparo, figures, background_image_first_page_aplica
 
     # Definir as posições e tamanhos dos gráficos conforme sua descrição
     graph_positions_and_sizes = [
-        # Gráfico 1 (canto esquerdo abaixo do título)
-        {'name': 'fig_haaplicada_aplicacao','x': x_margin, 'y': page_height - y_margin - 270, 'width': 270, 'height': 200},  # Gráfico 1
+        # Linha 1 (3 gráficos lado a lado)
+        {'name': 'fig_haaplicada_aplicacao',         'x': x_margin,         'y': page_height - y_margin - 250, 'width': 240, 'height': 180},  # Gráfico 1
+        {'name': 'fig_mediaVelocidade_aplicacao',    'x': x_margin + 250,   'y': page_height - y_margin - 250, 'width': 240, 'height': 180},  # Gráfico 2
+        {'name': 'fig_eficiencia_aplicacao',         'x': x_margin + 500,   'y': page_height - y_margin - 250, 'width': 240, 'height': 180},  # Gráfico 3
 
-        # Gráficos 2, 3, 4 (à direita do gráfico 1)
-        {'name': 'fig_mediaVelocidade_aplicacao','x': x_margin + 270, 'y': page_height - y_margin - 250, 'width': 250, 'height': 200},  # Gráfico 2
-        {'name': 'fig_eficiencia_aplicacao','x': x_margin + 270, 'y': page_height - y_margin - 470, 'width': 250, 'height': 200},  # Gráfico 3
-
-        # Gráfico 5 (pequeno abaixo do gráfico 1)
-        {'name': 'fig_taxa_aplicacao','x': x_margin, 'y': page_height - y_margin - 492, 'width': 250, 'height': 200},  # Gráfico 5
-
-        # Gráfico 6 (comprido no final da página)
-        {'name': 'fig_somacombustivel_aplicacao','x': x_margin, 'y': page_height - y_margin - 700, 'width': 250, 'height': 200},  # Gráfico 6 (comprido)
+        # Linha 2 (2 gráficos centralizados)
+        {'name': 'fig_taxa_aplicacao',               'x': x_margin + 100,   'y': page_height - y_margin - 470, 'width': 240, 'height': 180},  # Gráfico 4
+        {'name': 'fig_somacombustivel_aplicacao',    'x': x_margin + 370,   'y': page_height - y_margin - 470, 'width': 240, 'height': 180},  # Gráfico 5
     ]
-
 
     def set_background(page_num):
         if page_num == 0 and background_image_first_page_preparo:
@@ -1389,7 +1371,7 @@ if selected == "Colheita":
                     first_organization_name = df_colheita['Clientes'].iloc[0].split()[0]
 
                     # Gerar o PDF
-                    figures = [fig_hacolhida,  fig_taxa_colheita, fig_media_combustivel_colheita, fig_somacombustivel_colheita, fig_eficiencia_colheita, fig_hacolhida_cultura, fig_mediaVelocidade_colheita]
+                    figures = [fig_hacolhida,  fig_taxa_colheita, fig_media_combustivel_colheita, fig_somacombustivel_colheita, fig_mediaVelocidade_colheita, fig_eficiencia_colheita, fig_hacolhida_cultura]
                     pdf_buffer = generate_pdf_colheita(df_colheita, figures, background_image_first_page_colheita, background_image_other_pages)
 
                     # Configurar o nome do arquivo dinamicamente
