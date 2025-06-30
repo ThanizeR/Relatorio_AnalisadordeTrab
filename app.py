@@ -48,17 +48,20 @@ def generate_pdf_aplicacao(df_aplicacao, figures, background_image_first_page_ap
     y_margin = 40  # Margem superior
     header_space_other_pages = 70  # Espaço para o cabeçalho
 
-    # Definir as posições e tamanhos dos gráficos conforme sua descrição
     graph_positions_and_sizes = [
-        # Linha 1 (gráficos 1 a 3)
-        {'name': 'fig_haaplicada_aplicacao',         'x': x_margin,               'y': page_height - y_margin - 260, 'width': 240, 'height': 200},
-        {'name': 'fig_mediaVelocidade_aplicacao',    'x': x_margin + 255,         'y': page_height - y_margin - 260, 'width': 240, 'height': 200},
-        {'name': 'fig_eficiencia_aplicacao',         'x': x_margin + 255 * 2,     'y': page_height - y_margin - 260, 'width': 240, 'height': 200},
+    # Linha 1 (gráficos 1 a 3)
+    {'name': 'fig_haaplicada_aplicacao',                 'x': x_margin,               'y': page_height - y_margin - 250, 'width': 240, 'height': 200},
+    {'name': 'fig_mediaVelocidade_aplicacao',             'x': x_margin + 255,         'y': page_height - y_margin - 250, 'width': 240, 'height': 200},
+    {'name': 'fig_eficiencia_aplicacao',  'x': x_margin + 255 * 2,     'y': page_height - y_margin - 170, 'width': 240, 'height': 200},
 
-        # Linha 2 (gráficos 4 a 6)
-        {'name': 'fig_media_combustivel_aplicacao',  'x': x_margin,               'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
-        {'name': 'fig_taxa_aplicacao',               'x': x_margin + 255,         'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
-        {'name': 'fig_somacombustivel_aplicacao',    'x': x_margin + 255 * 2,     'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
+    # Linha 2 (gráficos 4 a 6)
+    {'name': 'fig_media_combustivel_aplicacao',       'x': x_margin,               'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
+    {'name': 'fig_taxa_aplicacao',  'x': x_margin + 255,         'y': page_height - y_margin - 490, 'width': 240, 'height': 200},
+    {'name': 'fig_produtoaplicado',         'x': x_margin + 255 * 2,     'y': page_height - y_margin - 380, 'width': 200, 'height': 160},
+
+    # Linha 3 (gráfico extra centralizado abaixo do 6º gráfico, no lado direito)
+    {'name': 'fig_somacombustivel_aplicacao', 'x': 600, 'y': 60, 'width': 160, 'height': 100},
+
     ]
 
 
@@ -972,14 +975,34 @@ if selected == "Aplicação":
 
             # Exibir gráfico no Streamlit
             col10.pyplot(fig_somacombustivel_aplicacao)
+#####################################################################################################################################
+            selected_columns_aplicados = ["Produtos", "Área Aplicada"]
+            df_selected_aplicados = df_aplicacao[selected_columns_aplicados].copy()
 
+            df_soma_aplicados = df_selected_aplicados.groupby("Produtos").sum().reset_index()
+
+                # Configurar o gráfico de pizza
+            fig_produto_aplicado, ax_pizza = plt.subplots(figsize=(6, 6))
+                # Criar rótulos com nome e soma da área semeada (ha)
+            labels = [f"{produtos} ({area:.2f} ha)" for produtos, area in zip(df_soma_aplicados["Produtos"], df_soma_aplicados["Área Aplicada"])]
+
+                # Plotar gráfico de pizza (rosca)
+            ax_pizza.pie(df_soma_aplicados["Área Aplicada"], labels=labels, 
+                        autopct='%1.1f%%', colors=plt.cm.Paired.colors, startangle=90, 
+                            wedgeprops={"edgecolor": "black"})
+
+                # Adicionar título
+            ax_pizza.set_title("Distribuição dos produtos aplicados")
+                                # Mostrar o gráfico no Streamlit
+            col11, col12 = st.columns(2)
+            col11.pyplot(fig_produto_aplicado)
             ###################################################GERAR PDF##################################################
             if st.button('Gerar PDF para Aplicação'):
                 # Supondo que 'Nome_Organizacao' seja uma coluna no dataframe 
                 first_organization_name = df_aplicacao['Clientes'].iloc[0].split()[0]
 
                 # Gerar o PDF
-                figures = [fig_haaplicada_aplicacao,fig_mediaVelocidade_aplicacao,fig_eficiencia_aplicacao, fig_media_combustivel_aplicacao, fig_taxa_aplicacao ,fig_somacombustivel_aplicacao]
+                figures = [fig_haaplicada_aplicacao,fig_mediaVelocidade_aplicacao,fig_eficiencia_aplicacao, fig_media_combustivel_aplicacao, fig_taxa_aplicacao ,fig_somacombustivel_aplicacao, fig_produto_aplicado]
                 pdf_buffer = generate_pdf_aplicacao(df_aplicacao, figures, background_image_first_page_aplicacao, background_image_other_pages)
 
                 # Configurar o nome do arquivo dinamicamente
