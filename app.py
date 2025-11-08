@@ -142,15 +142,16 @@ def generate_pdf_aplicacao(df_aplicacao, figures, background_image_first_page_ap
             graph_index += 1
             continue
 
-        # Ajustando o tamanho das fontes dos gráficos
         for ax in fig.get_axes():
             ax.title.set_fontsize(20)
             ax.xaxis.label.set_fontsize(20)
             ax.yaxis.label.set_fontsize(20)
             ax.tick_params(axis='both', labelsize=18)
-            if ax.legend():
-                ax.legend(fontsize=12)
 
+            # Remove qualquer legenda existente
+        legend = ax.get_legend()
+        if legend:
+            legend.remove()
         # Ajuste de números dentro dos gráficos
         for text in ax.texts:
             text.set_fontsize(18)
@@ -981,21 +982,34 @@ if selected == "Aplicação":
 
             df_soma_aplicados = df_selected_aplicados.groupby("Produtos").sum().reset_index()
 
-                # Configurar o gráfico de pizza
+            # Configurar o gráfico de pizza
             fig_produto_aplicado, ax_pizza = plt.subplots(figsize=(6, 6))
-                # Criar rótulos com nome e soma da área semeada (ha)
-            labels = [f"{produtos} ({area:.2f} ha)" for produtos, area in zip(df_soma_aplicados["Produtos"], df_soma_aplicados["Área Aplicada"])]
 
-                # Plotar gráfico de pizza (rosca)
-            ax_pizza.pie(df_soma_aplicados["Área Aplicada"], labels=labels, 
-                        autopct='%1.1f%%', colors=plt.cm.Paired.colors, startangle=90, 
-                            wedgeprops={"edgecolor": "black"})
+            # Criar rótulos com nome e soma da área aplicada (ha)
+            labels = [f"{produtos} ({area:.2f} ha)" for produtos, area in zip(
+                df_soma_aplicados["Produtos"], df_soma_aplicados["Área Aplicada"]
+            )]
 
-                # Adicionar título
+            # Plotar gráfico de pizza (rosca)
+            ax_pizza.pie(
+                df_soma_aplicados["Área Aplicada"],
+                labels=labels,
+                autopct='%1.1f%%',
+                colors=plt.cm.Paired.colors,
+                startangle=90,
+                wedgeprops={"edgecolor": "black"}
+            )
+
+            # Remover legenda (caso o matplotlib tente exibir uma automaticamente)
+            ax_pizza.legend().remove()
+
+            # Adicionar título
             ax_pizza.set_title("Distribuição dos produtos aplicados")
-                                # Mostrar o gráfico no Streamlit
+
+            # Mostrar o gráfico no Streamlit
             col11, col12 = st.columns(2)
             col11.pyplot(fig_produto_aplicado)
+
             ###################################################GERAR PDF##################################################
             if st.button('Gerar PDF para Aplicação'):
                 # Supondo que 'Nome_Organizacao' seja uma coluna no dataframe 
