@@ -1307,6 +1307,16 @@ if selected == "Colheita":
                 ax_combustivel.set_xlabel('')
                 ax_combustivel.set_ylabel('')
                 ax_combustivel.set_title('Média de Combustível por Equipamento (l/ha)')
+                # Forçar eixo Y iniciar em 0
+                ax_combustivel.set_ylim(bottom=0)
+
+                # Definir intervalos de 10 em 10
+                ax_combustivel.set_yticks(
+                    np.arange(0,
+                            df_medias_combustivel["Taxa de Combustível (Área)"].max() + 10,
+                            10)
+                )
+
                 # Rotacionar apenas os rótulos do eixo X
                 ax_combustivel.set_xticklabels(df_medias_combustivel["Nome da Máquina"], rotation=45, ha='right')
                 # Adicionar grade
@@ -1380,16 +1390,16 @@ if selected == "Colheita":
                 col10.pyplot(fig_somacombustivel_colheita)
 
                 ###############################################################################################
-                selected_columns_hacolhida = ["Tipo de Cultura", "Área Colhida"]
+                selected_columns_hacolhida = ["Variedades", "Área Colhida"]
                 df_selected_hacolhida = df_colheita[selected_columns_hacolhida].copy()
 
                 # Agrupar os dados por "Tipo de Cultura" e somar "Área Colhida"
-                df_soma_hacolhida = df_selected_hacolhida.groupby("Tipo de Cultura").sum().reset_index()
+                df_soma_hacolhida = df_selected_hacolhida.groupby("Variedades").sum().reset_index()
 
                 # Configurar o gráfico de pizza
                 fig_hacolhida_cultura, ax_pizza = plt.subplots(figsize=(6, 6))
                 # Criar rótulos com nome e soma da área semeada (ha)
-                labels = [f"{cultura} ({area:.2f} ha)" for cultura, area in zip(df_soma_hacolhida["Tipo de Cultura"], df_soma_hacolhida["Área Colhida"])]
+                labels = [f"{cultura} ({area:.2f} ha)" for cultura, area in zip(df_soma_hacolhida["Variedades"], df_soma_hacolhida["Área Colhida"])]
 
                 # Plotar gráfico de pizza (rosca)
                 ax_pizza.pie(df_soma_hacolhida["Área Colhida"], labels=labels, 
@@ -1397,7 +1407,7 @@ if selected == "Colheita":
                             wedgeprops={"edgecolor": "black"})
 
                 # Adicionar título
-                ax_pizza.set_title("Distribuição da Área Colhida por Tipo de Cultura")
+                ax_pizza.set_title("Distribuição da Área Colhida por Variedades")
                                 # Mostrar o gráfico no Streamlit
                 col11, col12 = st.columns(2)
                 col11.pyplot(fig_hacolhida_cultura)
