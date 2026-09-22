@@ -103,10 +103,10 @@ def generate_pdf_aplicacao(df_aplicacao, figures, background_image_first_page_ap
     set_background(1)
 
     try:
-        df_aplicacao['Área Aplicada'] = pd.to_numeric(df_aplicacao['Área Aplicada'], errors='coerce')
+        df_aplicacao['Área Trabalhada'] = pd.to_numeric(df_aplicacao['Área Trabalhada'], errors='coerce')
         df_aplicacao['Combustível Total'] = pd.to_numeric(df_aplicacao['Combustível Total'], errors='coerce')
 
-        area_total = df_aplicacao['Área Aplicada'].sum()
+        area_total = df_aplicacao['Área Trabalhada'].sum()
         combustivel_total = df_aplicacao['Combustível Total'].sum()
         total_equip = df_aplicacao['Nome da Máquina'].nunique()
 
@@ -645,11 +645,11 @@ if selected == "Aplicação":
                 col1.write(f"**Organização:** {organização}")
 
                 # Garantir que os valores sejam numéricos antes de somar
-                df_aplicacao['Área Aplicada'] = pd.to_numeric(df_aplicacao['Área Aplicada'], errors='coerce')
+                df_aplicacao['Área Trabalhada'] = pd.to_numeric(df_aplicacao['Área Trabalhada'], errors='coerce')
                 df_aplicacao['Combustível Total'] = pd.to_numeric(df_aplicacao['Combustível Total'], errors='coerce')
 
                 # Cálculo dos totais
-                area_total_aplicada = df_aplicacao['Área Aplicada'].sum()
+                area_total_aplicada = df_aplicacao['Área Trabalhada'].sum()
                 combustivel_total = df_aplicacao['Combustível Total'].sum()
                 total_equipamentos = df_aplicacao['Nome da Máquina'].nunique()
 
@@ -667,21 +667,21 @@ if selected == "Aplicação":
 
             #####################################SOMA DE AREA APLICADA#######################################
            # Definir os dados
-            selected_columns_haaplicada = ["Nome da Máquina", "Área Aplicada"]
+            selected_columns_haaplicada = ["Nome da Máquina", "Área Trabalhada"]
             df_selected_haaplicada = df_aplicacao[selected_columns_haaplicada].copy()
 
             # Agrupar os dados por "Nome da Máquina" e somar "Área Aplicada"
             df_soma_haaplicada = df_selected_haaplicada.groupby("Nome da Máquina").sum().reset_index()
 
             # Ordenar o DataFrame com base na soma da área aplicada
-            df_soma_haaplicada = df_soma_haaplicada.sort_values(by="Área Aplicada", ascending=True)  # Ordem crescente para horizontal
+            df_soma_haaplicada = df_soma_haaplicada.sort_values(by="Área Trabalhada", ascending=True)  # Ordem crescente para horizontal
 
             # Configurar o gráfico
             fig_haaplicada_aplicacao, ax_haaplicada = plt.subplots(figsize=(12, 9))
 
             # Extrair dados para plotagem
             maquinas_haaplicada = df_soma_haaplicada["Nome da Máquina"]
-            haaplicada = df_soma_haaplicada["Área Aplicada"]
+            haaplicada = df_soma_haaplicada["Área Trabalhada"]
 
             # Definir a altura das barras
             num_maquinas = len(maquinas_haaplicada)
@@ -976,7 +976,7 @@ if selected == "Aplicação":
             # Exibir gráfico no Streamlit
             col10.pyplot(fig_somacombustivel_aplicacao)
 #####################################################################################################################################
-            selected_columns_aplicados = ["Produtos", "Área Aplicada"]
+            selected_columns_aplicados = ["Produtos", "Área Trabalhada"]
             df_selected_aplicados = df_aplicacao[selected_columns_aplicados].copy()
 
             df_soma_aplicados = df_selected_aplicados.groupby("Produtos").sum().reset_index()
@@ -986,12 +986,12 @@ if selected == "Aplicação":
 
             # Criar rótulos com nome e soma da área aplicada (ha)
             labels = [f"{produtos} ({area:.2f} ha)" for produtos, area in zip(
-                df_soma_aplicados["Produtos"], df_soma_aplicados["Área Aplicada"]
+                df_soma_aplicados["Produtos"], df_soma_aplicados["Área Trabalhada"]
             )]
 
             # Plotar gráfico de pizza (rosca)
             ax_pizza.pie(
-                df_soma_aplicados["Área Aplicada"],
+                df_soma_aplicados["Área Trabalhada"],
                 labels=labels,
                 autopct='%1.1f%%',
                 colors=plt.cm.Paired.colors,
